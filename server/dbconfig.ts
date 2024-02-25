@@ -4,7 +4,7 @@ const dbConfig: PoolConfig = {
   user: 'postgres',
   host: 'localhost',
   database: 'time_thrive_db',
-  password: 'postgres',
+  password: 'Asus94000',
   port: 5432,
 };
 
