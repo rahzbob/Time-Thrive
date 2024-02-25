@@ -22,6 +22,12 @@ yarn init
 npm run init
 ```
 
+### Start the server
+
+```bash
+npx ts-node server/api.ts
+```
+
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 
 ```bash
