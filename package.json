@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
-    "axios": "^1.2.1",
+    "axios": "^1.6.7",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
     "pg": "^8.11.3",
     "quasar": "^2.8.0",
     "vue": "3.4.15",
@@ -23,7 +25,8 @@
   },
   "devDependencies": {
     "@quasar/app-vite": "^1.4.3",
-    "@types/node": "^12.20.21",
+    "@types/cors": "^2.8.17",
+    "@types/node": "^12.20.55",
     "@types/pg": "^8.11.0",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
@@ -32,7 +35,8 @@
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
     "prettier": "^2.5.1",
-    "typescript": "^4.5.4"
+    "ts-node": "^10.9.2",
+    "typescript": "^4.9.5"
   },
   "engines": {
     "node": "^20 || ^18 || ^16",
