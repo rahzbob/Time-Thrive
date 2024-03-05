@@ -6,10 +6,22 @@ const app = express();
 
 app.use(cors());
 
-app.get('/api/countries', async (req: Request, res: Response) => {
+app.get('/api/statistics', async (req: Request, res: Response) => {
   try {
-    const result = await pool.query('SELECT country FROM statistics');
-    res.json(result.rows);
+    const result = await pool.query('SELECT * FROM statistics');
+    const femaleLifeExpectancy = result.rows.map((row) => ({
+      country: row.country,
+      life_expectancy: row.women,
+    }));
+    const maleLifeExpectancy = result.rows.map((row) => ({
+      country: row.country,
+      life_expectancy: row.men,
+    }));
+
+    res.json({
+      femaleLifeExpectancy,
+      maleLifeExpectancy,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');
