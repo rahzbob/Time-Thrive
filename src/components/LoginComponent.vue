@@ -20,7 +20,7 @@
               dense
               outlined
               class="q-mt-md"
-              v-model="password"
+              v-model="mot_de_passe"
               type="password"
               label="Password"
             ></q-input>
@@ -41,7 +41,7 @@
             <div class="text-grey-8">
               Don't have an account yet?
               <a
-                href="#"
+                href="#/signup"
                 class="text-dark text-weight-bold"
                 style="text-decoration: none"
                 >Sign up.</a
@@ -55,20 +55,32 @@
 </template>
 
 <script>
-export default {
+import axios from 'src/boot/axios';
+
+const LoginComponent = {
   name: 'LoginComponent',
-  // v-model seront dans data()
   data() {
     return {
       email: '',
-      password: '',
+      mot_de_passe: '',
     };
   },
-  // toutes les méthods à utiliser dans cette vue. En utilisant @onclick bien sur
+
   methods: {
-    login() {
-      console.log(this.email, this.password);
+    async login() {
+      // console.log(this.email, this.password);
+
+      try {
+        const response = await axios.post('/api/login', {
+          email: this.email,
+          mot_de_passe: this.mot_de_passe,
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.log('Erreur : ', error);
+      }
     },
   },
 };
+export default LoginComponent;
 </script>

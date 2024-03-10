@@ -1,5 +1,6 @@
 import { RouteRecordRaw } from 'vue-router';
 import LoginComponent from '../components/LoginComponent.vue';
+import SignUpComponent from '../components/SignUpComponent.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -9,12 +10,14 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/login',
-    component: () => import('components/LoginComponent.vue'),
-    children: [{ path: '', component: LoginComponent }],
+    name: 'login',
+    component: LoginComponent,
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
+  {
+    path: '/signup',
+    name: 'signup',
+    component: SignUpComponent,
+  },
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
