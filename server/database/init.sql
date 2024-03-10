@@ -8,4 +8,13 @@ CREATE TABLE statistics (
   men FLOAT
 );
 
+CREATE TABLE utilisateur(
+    id SERIAL PRIMARY KEY ,
+    nom VARCHAR(255) NOT NULL, 
+    prenom VARCHAR(255) NOT NULL, 
+    email VARCHAR(255) NOT NULL, 
+    mot_de_passe VARCHAR(255)
+);
+
 \copy statistics FROM 'server/database/statistics.csv' DELIMITER ';' CSV HEADER;
+-- INSERT INTO utilisateur(nom, prenom,email, mot_de_passe) VALUES   ('Hammami', 'Omar', 'omar@efr', 'omar');
