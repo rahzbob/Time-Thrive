@@ -12,19 +12,26 @@
     "dev": "quasar dev",
     "build": "quasar build",
     "init": "psql -U postgres -f ./server/database/init.sql",
-    "init_ubuntu_sudo": "sudo -u postgres psql -f ./server/database/init.sql"
+    "init_ubuntu_sudo": "sudo -u postgres psql -f ./server/database/init.sql",
+    "swagger": "node ./server/swagger.mjs",
+    "type": "module"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
+    "@types/express": "^4.17.21",
+    "@types/swagger-ui-express": "^4.1.6",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.18.2",
+    "express": "^4.19.1",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.3",
     "quasar": "^2.8.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui": "^5.12.0",
+    "swagger-ui-express": "^5.0.0",
     "vue": "3.4.15",
     "vue-router": "^4.0.12"
   },
@@ -40,6 +47,7 @@
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
     "prettier": "^2.5.1",
+    "swagger-autogen": "^2.23.7",
     "ts-node": "^10.9.2",
     "typescript": "^4.9.5"
   },

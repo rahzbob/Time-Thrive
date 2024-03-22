@@ -9,9 +9,15 @@ import { createUser, login } from '../src/services/UserService';
 const app = express();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger-output.json');
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// Routes
 
 app.get('/api/statistics', async (req: Request, res: Response) => {
   try {
@@ -70,6 +76,7 @@ app.post('/api/login', async (req: Request, res: Response) => {
 });
 
 app.get('/api/users', async (req: Request, res: Response) => {
+  console.log('users');
   try {
     const result = await pool.query('SELECT * FROM utilisateur');
     const users = result.rows.map((row) => ({
