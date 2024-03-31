@@ -1,23 +1,17 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import pool from './dbconfig';
-import { createUser, login } from '../src/services/UserService';
-
-// import { connect } from 'http2';
-// import { error } from 'console';
+import bodyParser from 'body-parser';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../swagger-output.json';
+import pool from '../db/dbConfig';
+import { createUser, signIn } from './users/userService';
+import { User } from './users/userModels';
 
 const app = express();
-const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger-output.json');
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(cors());
 app.use(bodyParser.json());
-
-// Routes
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/api/statistics', async (req: Request, res: Response) => {
   try {
@@ -35,7 +29,6 @@ app.get('/api/statistics', async (req: Request, res: Response) => {
       femaleLifeExpectancy,
       maleLifeExpectancy,
     });
-    // console.log('Sent');
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');
@@ -44,12 +37,7 @@ app.get('/api/statistics', async (req: Request, res: Response) => {
 
 app.post('/api/signup', async (req: Request, res: Response) => {
   try {
-    const user: {
-      prenom: string;
-      nom: string;
-      email: string;
-      password: string;
-    } = {
+    const user: User = {
       prenom: req.body.prenom,
       nom: req.body.nom,
       email: req.body.email,
@@ -64,19 +52,17 @@ app.post('/api/signup', async (req: Request, res: Response) => {
   }
 });
 
-app.post('/api/login', async (req: Request, res: Response) => {
+app.post('/api/signin', async (req: Request, res: Response) => {
   try {
-    await login(req.body.email, req.body.mot_de_passe);
+    await signIn(req.body.email, req.body.mot_de_passe);
     res.status(200).send('Vous êtes connecté ! ');
-
-    // res.json(result.rows);
   } catch (error) {
-    console.error('Erreur : ', error);
+    console.error(error);
+    res.status(500).send('Server error');
   }
 });
 
 app.get('/api/users', async (req: Request, res: Response) => {
-  console.log('users');
   try {
     const result = await pool.query('SELECT * FROM utilisateur');
     const users = result.rows.map((row) => ({
@@ -86,7 +72,7 @@ app.get('/api/users', async (req: Request, res: Response) => {
     res.json({ users });
   } catch (error) {
     console.error(error);
-    res.status(500).send('server error');
+    res.status(500).send('Server error');
   }
 });
 
