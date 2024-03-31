@@ -7,9 +7,7 @@
         label="Your country"
         filled
         :options="countriesOptions"
-        :rules="[
-          (val) => (val && val.length > 0) || 'Please select your country',
-        ]"
+        :rules="[(value) => notEmpty(value)]"
       />
       <q-select
         v-model="selectedGender"
@@ -23,7 +21,7 @@
         type="number"
         label="Your age"
         filled
-        :rules="[(val) => (val !== 0 && val > 0) || 'Please enter your age']"
+        :rules="[(value) => positiveNumber(value)]"
       />
       <div>
         <q-btn label="Submit" type="submit" color="primary" />
@@ -42,8 +40,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { QForm } from 'quasar';
-import { fetchCountries, fetchLifeExpectancy } from 'src/services/statistics';
+import { useRouter } from 'vue-router';
+import {
+  fetchCountries,
+  fetchLifeExpectancy,
+} from 'src/services/statisticsService';
+import { notEmpty, positiveNumber } from 'src/composables/inputRules';
+import { useUserStore } from 'src/stores/userStore';
 
+const router = useRouter();
 const form = ref(null);
 const selectedCountry = ref('');
 const countriesOptions = ref([]);
@@ -55,21 +60,27 @@ fetchCountries().then((response) => {
   countriesOptions.value = response;
 });
 
-function onSubmit() {
+async function onSubmit() {
   if (form.value !== null) {
     let lifeExpectancy;
-    fetchLifeExpectancy(selectedCountry.value, selectedGender.value).then(
-      (response) => {
-        lifeExpectancy = (response - Number(age.value)).toFixed(1);
-      }
+    const response = await fetchLifeExpectancy(
+      selectedCountry.value,
+      selectedGender.value
     );
+    lifeExpectancy = response;
+    age.value = Number(age.value);
+
+    console.log('lifeExpectancy', lifeExpectancy);
+    const userStore = useUserStore();
+    userStore.setUserData(lifeExpectancy, age.value);
+    router.push('/signin');
   }
 }
 
-// to reset validations
 function onReset() {
   selectedCountry.value = '';
   selectedGender.value = 'Other';
   age.value = 0;
 }
 </script>
+src/stores/userStore
