@@ -39,7 +39,9 @@
   },
   "devDependencies": {
     "@quasar/app-vite": "^1.4.3",
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^12.20.55",
     "@types/pg": "^8.11.0",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
