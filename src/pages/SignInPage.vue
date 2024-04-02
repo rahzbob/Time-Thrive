@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center bg-grey-2">
-    <q-form @submit="onSubmit">
+    <q-form @submit.prevent="onSubmit" ref="form">
       <q-card class="q-pa-md shadow-2" bordered>
         <q-card-section class="text-center">
           <div class="text-grey-9 text-h5 text-weight-bold">Sign in</div>
@@ -8,18 +8,23 @@
         </q-card-section>
         <q-card-section>
           <q-input
+            v-model="email"
             dense
             outlined
-            v-model="email"
             label="Email Address"
+            lazy-rules
             :rules="[(value) => validEmail(value), (value) => notEmpty(value)]"
           ></q-input>
           <q-input
+            v-model="password"
             dense
             outlined
             class="q-mt-md"
-            v-model="password"
-            :rules="[(value) => notEmpty(value)]"
+            lazy-rules
+            :rules="[
+              (value) => notEmpty(value),
+              (value) => matchPassword(value),
+            ]"
             label="Password"
           ></q-input>
         </q-card-section>
@@ -52,26 +57,47 @@
   </q-page>
 </template>
 
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { ref, onSubmit } from 'vue';
 import { useRouter } from 'vue-router';
 import { api } from 'src/boot/axios';
-import { validEmail, notEmpty } from 'src/composables/inputRules';
+import {
+  validEmail,
+  notEmpty,
+  matchPassword,
+} from 'src/composables/inputRules';
 
 const router = useRouter();
+const form = ref(null);
 const email = ref('');
 const password = ref('');
 
 async function onSubmit() {
-  try {
-    await api.post('/signin', {
-      email: email.value,
-      mot_de_passe: password.value,
-    });
+  const formValidated = await form.value.validate();
 
-    router.push('/results');
+  if (formValidated) {
+    try {
+      await api.post('/signin', {
+        email: email.value,
+        mot_de_passe: password.value,
+      });
+      router.push('/results');
+    } catch (error) {
+      console.error('Error: ', error);
+    }
+  }
+}
+
+async function matchPassword(password) {
+  try {
+    const response = await api.post('/check-password', {
+      email: email.value,
+      password,
+    });
+    return response.data.match || 'Please enter a valid password.';
   } catch (error) {
-    console.log('Erreur : ', error);
+    console.error('Error validating password:', error);
+    return false;
   }
 }
 </script>

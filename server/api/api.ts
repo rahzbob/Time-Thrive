@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger-output.json';
 import pool from '../db/dbConfig';
-import { createUser, signIn } from './users/userService';
+import { createUser, signIn, checkPassword } from './users/userService';
 import { User } from './users/userModels';
 
 const app = express();
@@ -70,6 +70,19 @@ app.get('/api/users', async (req: Request, res: Response) => {
       prenom: row.prenom,
     }));
     res.json({ users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+});
+
+app.post('/api/check-password', async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    const match = await checkPassword(email, password);
+
+    res.json({ match });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');

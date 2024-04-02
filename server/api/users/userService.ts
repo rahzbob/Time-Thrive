@@ -1,11 +1,9 @@
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import pool from '../../db/dbConfig';
 import { User } from './userModels';
 
 require('dotenv').config();
-process.env.ACCESS_TOKEN_SECRET;
-
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 export async function createUser(user: User) {
   //génération du salt et hachage du MDP : user.password.
@@ -18,29 +16,53 @@ export async function createUser(user: User) {
   );
 }
 
-export async function signIn(email: string, password: string) {
-  const user = await pool.query('SELECT * FROM utilisateur WHERE email = $1', [
-    email,
-  ]);
+const ACCESS_TOKEN_SECRET =
+  process.env.ACCESS_TOKEN_SECRET || 'Xk7@QzY2&nLz5#Wq8rV9Tn6Jc4Ry!gA$';
 
-  if (user.rows.length === 0) {
-    throw new Error('Utilisateur introuvable');
-  }
-  const passwordIsValid = await bcrypt.compare(
-    password,
-    user.rows[0].mot_de_passe
-  );
-  console.log(passwordIsValid);
+export async function signIn(
+  email: string,
+  password: string
+): Promise<boolean | string> {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM utilisateur WHERE email = $1 AND mot_de_passe = $2',
+      [email, password]
+    );
 
-  if (passwordIsValid == true) {
-    console.log('Ok.');
-    const accessToken = generateAccessToken(user.rows[0]);
-    console.log('accessToken', accessToken);
+    if (result.rows.length === 0) {
+      return false; // User not found
+    }
+
+    const user = result.rows[0];
+    const token = jwt.sign({ userId: user.id }, ACCESS_TOKEN_SECRET, {
+      expiresIn: '1h',
+    });
+    return token;
+  } catch (error) {
+    console.error('Error signing in:', error);
+    throw error;
   }
 }
 
-function generateAccessToken(user: User) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: '1800s',
-  });
+export async function checkPassword(
+  email: string,
+  password: string
+): Promise<boolean> {
+  try {
+    const result = await pool.query(
+      'SELECT mot_de_passe FROM utilisateur WHERE email = $1',
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      return false; // User not found
+    }
+    const storedPasswordHash = result.rows[0].mot_de_passe;
+    const isPasswordValid = await bcrypt.compare(password, storedPasswordHash);
+
+    return isPasswordValid;
+  } catch (error) {
+    console.error('Error checking password:', error);
+    throw error;
+  }
 }
