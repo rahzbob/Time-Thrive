@@ -22,7 +22,7 @@ const ACCESS_TOKEN_SECRET =
 export async function signIn(
   email: string,
   password: string
-): Promise<boolean | string> {
+): Promise<boolean | any> {
   try {
     const result = await pool.query(
       'SELECT * FROM utilisateur WHERE email = $1 AND mot_de_passe = $2',
@@ -30,14 +30,15 @@ export async function signIn(
     );
 
     if (result.rows.length === 0) {
-      return false; // User not found
+      return { success: false }; // User not found
     }
 
     const user = result.rows[0];
     const token = jwt.sign({ userId: user.id }, ACCESS_TOKEN_SECRET, {
       expiresIn: '1h',
     });
-    return token;
+
+    return { success: true, token };
   } catch (error) {
     console.error('Error signing in:', error);
     throw error;

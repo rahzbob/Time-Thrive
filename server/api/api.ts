@@ -54,10 +54,14 @@ app.post('/api/signup', async (req: Request, res: Response) => {
 
 app.post('/api/signin', async (req: Request, res: Response) => {
   try {
-    await signIn(req.body.email, req.body.mot_de_passe);
-    res.status(200).send('Vous êtes connecté ! ');
+    const connected = await signIn(req.body.email, req.body.mot_de_passe);
+
+    if (connected.success) {
+      res.status(200).json({ accessToken: connected.accessToken });
+    } else {
+      res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+    }
   } catch (error) {
-    console.error(error);
     res.status(500).send('Server error');
   }
 });
@@ -84,7 +88,6 @@ app.post('/api/check-password', async (req: Request, res: Response) => {
 
     res.json({ match });
   } catch (error) {
-    console.error(error);
     res.status(500).send('Server error');
   }
 });

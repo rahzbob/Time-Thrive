@@ -16,6 +16,7 @@
             :rules="[(value) => validEmail(value), (value) => notEmpty(value)]"
           ></q-input>
           <q-input
+            type="password"
             v-model="password"
             dense
             outlined
@@ -52,6 +53,9 @@
             </router-link>
           </div>
         </q-card-section>
+        <q-card-section class="q-pa-md" v-if="!isValidAuthentication">
+          <span class="text-red-7">{{ errorMessage }}</span>
+        </q-card-section>
       </q-card>
     </q-form>
   </q-page>
@@ -66,14 +70,17 @@ import {
   notEmpty,
   matchPassword,
 } from 'src/composables/inputRules';
+import { QForm } from 'quasar';
 
 const router = useRouter();
 const form = ref(null);
 const email = ref('');
 const password = ref('');
+const errorMessage = ref('');
+let isValidAuthentication = ref(true);
 
 async function onSubmit() {
-  const formValidated = await form.value.validate();
+  const formValidated: QForm = await form.value.validate();
 
   if (formValidated) {
     try {
@@ -100,4 +107,7 @@ async function matchPassword(password) {
     return false;
   }
 }
+// function showErrorNotification(message) {
+//   window.alert(message);
+// }
 </script>
