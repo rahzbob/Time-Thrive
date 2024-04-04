@@ -130,8 +130,13 @@ async function onSubmit() {
 
     const userStore = useUserStore();
     userStore.setUserData(lifeExpectancy, age.value);
+    const isAuthenticated = userStore.authenticated;
 
-    router.push('/signin');
+    if (isAuthenticated) {
+      router.push('/results');
+    } else {
+      router.push('/signin');
+    }
   }
 }
 

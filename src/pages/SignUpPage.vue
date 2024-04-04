@@ -69,13 +69,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { QForm } from 'quasar';
 import { api } from 'src/boot/axios';
 import {
   notEmpty,
   validEmail,
   validPassword,
 } from 'src/composables/inputRules';
-import { QForm } from 'quasar';
+import { useUserStore } from 'src/stores/userStore';
 
 const router = useRouter();
 const form = ref<QForm | null>(null);
@@ -92,7 +93,7 @@ async function onSubmit() {
 
   if (formValidated) {
     try {
-      await api.post(
+      const response = await api.post(
         '/signup',
         {
           prenom: prenom.value,
@@ -106,6 +107,11 @@ async function onSubmit() {
           },
         }
       );
+
+      if (response.data.authenticated) {
+        const userStore = useUserStore();
+        userStore.setAuthenticated(true);
+      }
 
       router.push('/results');
     } catch (error) {

@@ -46,7 +46,7 @@ app.post('/api/signup', async (req: Request, res: Response) => {
     };
 
     await createUser(user);
-    res.status(200).send('Utilisateur ajouté ! ');
+    res.status(200).json(user);
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');

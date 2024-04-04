@@ -63,9 +63,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { QForm } from 'quasar';
 import { api } from 'src/boot/axios';
 import { validEmail, notEmpty } from 'src/composables/inputRules';
-import { QForm } from 'quasar';
+import { useUserStore } from 'src/stores/userStore';
 
 const router = useRouter();
 const form = ref<QForm | null>(null);
@@ -86,8 +87,13 @@ async function onSubmit() {
         email: email.value,
         mot_de_passe: password.value,
       });
+
       if (result.status == 200) {
         window.localStorage.setItem('token', result.data.token);
+
+        const userStore = useUserStore();
+        userStore.setAuthenticated(true);
+
         router.push('/results');
       }
     } catch (error: any) {
