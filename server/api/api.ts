@@ -42,6 +42,7 @@ app.post('/api/signup', async (req: Request, res: Response) => {
       nom: req.body.nom,
       email: req.body.email,
       password: req.body.mot_de_passe,
+      authenticated: true,
     };
 
     await createUser(user);
@@ -65,6 +66,15 @@ app.post('/api/signin', async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).send('Server error');
   }
+});
+
+app.post('/api/logout', async (req: Request, res: Response) => {
+  window.localStorage.removeItem('token');
+  const user = await pool.query('SELECT * FROM utilisateur WHERE email = $1', [
+    req.body.email,
+  ]);
+  user.rows[0].authenticated = false;
+  res.sendStatus(204);
 });
 
 app.get('/api/users', async (req: Request, res: Response) => {

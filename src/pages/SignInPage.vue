@@ -86,8 +86,8 @@ async function onSubmit() {
         email: email.value,
         mot_de_passe: password.value,
       });
-
       if (result.status == 200) {
+        window.localStorage.setItem('token', result.data.token);
         router.push('/results');
       }
     } catch (error: any) {

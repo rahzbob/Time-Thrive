@@ -64,7 +64,7 @@ export function calculateObesityLifeExpectancyLoss(
 
   if (bmi < 30) return 0;
   else if (bmi >= 30 && bmi < 35) return 1.6;
-  else if (bmi >= 35 && bmi < 40) return 6.5;
+  else if (bmi >= 35 && bmi < 40) return 4.5;
   else if (bmi >= 40 && bmi < 45) return 6.5;
   else if (bmi >= 45 && bmi < 50) return 8.9;
   else if (bmi >= 50 && bmi < 55) return 9.8;
