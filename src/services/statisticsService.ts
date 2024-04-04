@@ -31,13 +31,11 @@ export async function fetchLifeExpectancy(
         (country: { country: string }) => country.country === selectedCountry
       );
 
-      return Number(
-        (
-          (femaleLifeExpectancy.life_expectancy +
-            maleLifeExpectancy.life_expectancy) /
-          2
-        ).toFixed(1)
-      ); // We went from a number to a string to a number again - average javascript brainfuck...
+      return (
+        (femaleLifeExpectancy.life_expectancy +
+          maleLifeExpectancy.life_expectancy) /
+        2
+      );
     } else {
       const lifeExpectancyData =
         gender === 'Female' ? femaleLifeExpectancyData : maleLifeExpectancyData;
@@ -54,4 +52,21 @@ export async function fetchLifeExpectancy(
     );
     throw error;
   }
+}
+
+export function calculateObesityLifeExpectancyLoss(
+  height: number,
+  weight: number
+) {
+  height = (height / 100) ** 2;
+
+  const bmi = weight / height;
+
+  if (bmi < 30) return 0;
+  else if (bmi >= 30 && bmi < 35) return 1.6;
+  else if (bmi >= 35 && bmi < 40) return 6.5;
+  else if (bmi >= 40 && bmi < 45) return 6.5;
+  else if (bmi >= 45 && bmi < 50) return 8.9;
+  else if (bmi >= 50 && bmi < 55) return 9.8;
+  else return 13.7;
 }

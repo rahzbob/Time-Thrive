@@ -63,3 +63,9 @@ See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-
 ## Statistics sources:
 
 https://www.insee.fr/fr/statistiques/2383448
+
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2598467
+
+https://irp.nih.gov/blog/post/2020/01/extreme-obesity-shaves-years-off-life-expectancy
+
+https://www.researchgate.net/figure/Years-of-life-expectancy-lost-after-age-40-in-relation-to-joint-categories-of-physical_fig2_233385451
