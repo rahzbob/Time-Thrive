@@ -11,10 +11,7 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build",
-    "init": "psql -U postgres -f ./server/database/init.sql",
-    "init_ubuntu_sudo": "sudo -u postgres psql -f ./server/database/init.sql",
-    "swagger": "node ./server/swagger.mjs",
-    "type": "module"
+    "init": "psql -U postgres -f ./server/database/init.sql"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",

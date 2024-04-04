@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger-output.json';
 import pool from '../db/dbConfig';
-import { createUser, signIn, checkPassword } from './users/userService';
+import { createUser, signIn } from './users/userService';
 import { User } from './users/userModels';
 
 const app = express();
@@ -54,14 +54,18 @@ app.post('/api/signup', async (req: Request, res: Response) => {
 
 app.post('/api/signin', async (req: Request, res: Response) => {
   try {
-    const connected = await signIn(req.body.email, req.body.mot_de_passe);
+    const token = await signIn(req.body.email, req.body.mot_de_passe);
+    // console.log('or IF backend', token);
 
-    if (connected.success) {
-      res.status(200).json({ accessToken: connected.accessToken });
+    if (token) {
+      res.status(200).json({ token });
+      console.log('if', token);
     } else {
       res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+      console.log('else server');
     }
   } catch (error) {
+    console.error(error);
     res.status(500).send('Server error');
   }
 });
@@ -76,18 +80,6 @@ app.get('/api/users', async (req: Request, res: Response) => {
     res.json({ users });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Server error');
-  }
-});
-
-app.post('/api/check-password', async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
-
-    const match = await checkPassword(email, password);
-
-    res.json({ match });
-  } catch (error) {
     res.status(500).send('Server error');
   }
 });

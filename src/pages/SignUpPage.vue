@@ -75,15 +75,21 @@ import {
   validEmail,
   validPassword,
 } from 'src/composables/inputRules';
+import { QForm } from 'quasar';
 
 const router = useRouter();
-const form = ref(null);
+const form = ref<QForm | null>(null);
 const prenom = ref('');
 const nom = ref('');
 const email = ref('');
 const password = ref('');
 
 async function onSubmit() {
+  if (form.value === null) {
+    console.error('Form is null');
+    return;
+  }
+
   const formValidated = await form.value.validate();
 
   if (formValidated) {
@@ -109,5 +115,3 @@ async function onSubmit() {
   }
 }
 </script>
-
-```

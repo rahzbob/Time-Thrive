@@ -19,51 +19,29 @@ export async function createUser(user: User) {
 const ACCESS_TOKEN_SECRET =
   process.env.ACCESS_TOKEN_SECRET || 'Xk7@QzY2&nLz5#Wq8rV9Tn6Jc4Ry!gA$';
 
-export async function signIn(
-  email: string,
-  password: string
-): Promise<boolean | any> {
-  try {
-    const result = await pool.query(
-      'SELECT * FROM utilisateur WHERE email = $1 AND mot_de_passe = $2',
-      [email, password]
-    );
+export async function signIn(email: string, password: string) {
+  console.log('commence');
+  const user = await pool.query('SELECT * FROM utilisateur WHERE email = $1', [
+    email,
+  ]);
 
-    if (result.rows.length === 0) {
-      return { success: false }; // User not found
-    }
+  // if (user.rows.length === 0) {
+  //   throw new Error('Utilisateur introuvable');
+  // }
+  const passwordIsValid = await bcrypt.compare(
+    password,
+    user.rows[0].mot_de_passe
+  );
 
-    const user = result.rows[0];
-    const token = jwt.sign({ userId: user.id }, ACCESS_TOKEN_SECRET, {
+  if (passwordIsValid) {
+    console.log('Ok.');
+    const token = jwt.sign({ userId: user.rows[0].id }, ACCESS_TOKEN_SECRET, {
       expiresIn: '1h',
     });
-
-    return { success: true, token };
-  } catch (error) {
-    console.error('Error signing in:', error);
-    throw error;
+    console.log('accessToken', token);
+    return token;
   }
-}
-
-export async function checkPassword(
-  email: string,
-  password: string
-): Promise<boolean> {
-  try {
-    const result = await pool.query(
-      'SELECT mot_de_passe FROM utilisateur WHERE email = $1',
-      [email]
-    );
-
-    if (result.rows.length === 0) {
-      return false; // User not found
-    }
-    const storedPasswordHash = result.rows[0].mot_de_passe;
-    const isPasswordValid = await bcrypt.compare(password, storedPasswordHash);
-
-    return isPasswordValid;
-  } catch (error) {
-    console.error('Error checking password:', error);
-    throw error;
-  }
+  // else {
+  //   throw new Error('Mot de passe incorrect');
+  // }
 }

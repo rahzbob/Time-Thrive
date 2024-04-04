@@ -22,10 +22,7 @@
             outlined
             class="q-mt-md"
             lazy-rules
-            :rules="[
-              (value) => notEmpty(value),
-              (value) => matchPassword(value),
-            ]"
+            :rules="[(value) => notEmpty(value)]"
             label="Password"
           ></q-input>
         </q-card-section>
@@ -62,52 +59,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onSubmit } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { api } from 'src/boot/axios';
-import {
-  validEmail,
-  notEmpty,
-  matchPassword,
-} from 'src/composables/inputRules';
+import { validEmail, notEmpty } from 'src/composables/inputRules';
 import { QForm } from 'quasar';
 
 const router = useRouter();
-const form = ref(null);
+const form = ref<QForm | null>(null);
 const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
 let isValidAuthentication = ref(true);
 
 async function onSubmit() {
-  const formValidated: QForm = await form.value.validate();
+  if (form.value === null) {
+    console.error('Form is null');
+    return;
+  }
+
+  const formValidated = await form.value.validate();
 
   if (formValidated) {
     try {
-      await api.post('/signin', {
+      const result = await api.post('/signin', {
         email: email.value,
         mot_de_passe: password.value,
       });
-      router.push('/results');
-    } catch (error) {
-      console.error('Error: ', error);
+      console.log('en dehors');
+
+      console.log(result);
+      if (result.status == 200) {
+        router.push('/results');
+        console.log('dans if');
+      }
+    } catch (error: any) {
+      console.error(error.message);
+      console.log('dans else');
+      isValidAuthentication.value = false;
+      errorMessage.value = 'Wrong email or password. Please try again.';
     }
   }
 }
-
-async function matchPassword(password) {
-  try {
-    const response = await api.post('/check-password', {
-      email: email.value,
-      password,
-    });
-    return response.data.match || 'Please enter a valid password.';
-  } catch (error) {
-    console.error('Error validating password:', error);
-    return false;
-  }
-}
-// function showErrorNotification(message) {
-//   window.alert(message);
-// }
 </script>
