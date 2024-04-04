@@ -55,14 +55,11 @@ app.post('/api/signup', async (req: Request, res: Response) => {
 app.post('/api/signin', async (req: Request, res: Response) => {
   try {
     const token = await signIn(req.body.email, req.body.mot_de_passe);
-    // console.log('or IF backend', token);
 
     if (token) {
       res.status(200).json({ token });
-      console.log('if', token);
     } else {
       res.status(401).json({ message: 'Email ou mot de passe incorrect' });
-      console.log('else server');
     }
   } catch (error) {
     console.error(error);

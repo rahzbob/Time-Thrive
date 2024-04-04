@@ -16,7 +16,7 @@
             label="First name"
             lazy-rules
             :rules="[(value) => notEmpty(value)]"
-          ></q-input>
+          />
           <q-input
             v-model="nom"
             dense
@@ -25,7 +25,7 @@
             class="q-mt-md"
             lazy-rules
             :rules="[(value) => notEmpty(value)]"
-          ></q-input>
+          />
           <q-input
             v-model="email"
             dense
@@ -34,7 +34,7 @@
             label="Email address"
             lazy-rules
             :rules="[(value) => notEmpty(value), (value) => validEmail(value)]"
-          ></q-input>
+          />
           <q-input
             v-model="password"
             dense
@@ -47,7 +47,7 @@
               (value) => notEmpty(value),
               (value) => validPassword(value),
             ]"
-          ></q-input>
+          />
         </q-card-section>
         <q-card-section>
           <q-btn
@@ -86,10 +86,8 @@ const password = ref('');
 
 async function onSubmit() {
   if (form.value === null) {
-    console.error('Form is null');
-    return;
+    throw new Error('Form is null');
   }
-
   const formValidated = await form.value.validate();
 
   if (formValidated) {
@@ -108,6 +106,7 @@ async function onSubmit() {
           },
         }
       );
+
       router.push('/results');
     } catch (error) {
       console.error('Erreur:', error);

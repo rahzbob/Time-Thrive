@@ -14,17 +14,17 @@
             label="Email Address"
             lazy-rules
             :rules="[(value) => validEmail(value), (value) => notEmpty(value)]"
-          ></q-input>
+          />
           <q-input
-            type="password"
             v-model="password"
+            type="password"
             dense
             outlined
             class="q-mt-md"
             lazy-rules
             :rules="[(value) => notEmpty(value)]"
             label="Password"
-          ></q-input>
+          />
         </q-card-section>
         <q-card-section>
           <q-btn
@@ -36,7 +36,7 @@
             label="Sign in"
             no-caps
             class="full-width"
-          ></q-btn>
+          />
         </q-card-section>
         <q-card-section class="text-center q-pt-none">
           <div class="text-grey-8">
@@ -51,7 +51,9 @@
           </div>
         </q-card-section>
         <q-card-section class="q-pa-md" v-if="!isValidAuthentication">
-          <span class="text-red-7">{{ errorMessage }}</span>
+          <span class="text-red-7"
+            >Wrong email or password. Please try again.</span
+          >
         </q-card-section>
       </q-card>
     </q-form>
@@ -69,13 +71,11 @@ const router = useRouter();
 const form = ref<QForm | null>(null);
 const email = ref('');
 const password = ref('');
-const errorMessage = ref('');
-let isValidAuthentication = ref(true);
+const isValidAuthentication = ref(true);
 
 async function onSubmit() {
   if (form.value === null) {
-    console.error('Form is null');
-    return;
+    throw new Error('Form is null');
   }
 
   const formValidated = await form.value.validate();
@@ -86,18 +86,12 @@ async function onSubmit() {
         email: email.value,
         mot_de_passe: password.value,
       });
-      console.log('en dehors');
 
-      console.log(result);
       if (result.status == 200) {
         router.push('/results');
-        console.log('dans if');
       }
     } catch (error: any) {
-      console.error(error.message);
-      console.log('dans else');
       isValidAuthentication.value = false;
-      errorMessage.value = 'Wrong email or password. Please try again.';
     }
   }
 }

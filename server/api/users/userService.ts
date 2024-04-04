@@ -20,28 +20,18 @@ const ACCESS_TOKEN_SECRET =
   process.env.ACCESS_TOKEN_SECRET || 'Xk7@QzY2&nLz5#Wq8rV9Tn6Jc4Ry!gA$';
 
 export async function signIn(email: string, password: string) {
-  console.log('commence');
   const user = await pool.query('SELECT * FROM utilisateur WHERE email = $1', [
     email,
   ]);
-
-  // if (user.rows.length === 0) {
-  //   throw new Error('Utilisateur introuvable');
-  // }
   const passwordIsValid = await bcrypt.compare(
     password,
     user.rows[0].mot_de_passe
   );
 
   if (passwordIsValid) {
-    console.log('Ok.');
     const token = jwt.sign({ userId: user.rows[0].id }, ACCESS_TOKEN_SECRET, {
       expiresIn: '1h',
     });
-    console.log('accessToken', token);
     return token;
   }
-  // else {
-  //   throw new Error('Mot de passe incorrect');
-  // }
 }
