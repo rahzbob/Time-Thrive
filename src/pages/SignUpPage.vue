@@ -108,7 +108,7 @@ async function onSubmit() {
         }
       );
 
-      if (response.data.authenticated) {
+      if (response.status === 200) {
         const userStore = useUserStore();
         userStore.setAuthenticated(true);
       }

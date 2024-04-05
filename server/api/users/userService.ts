@@ -7,7 +7,6 @@ require('dotenv').config();
 
 export async function createUser(user: User) {
   //génération du salt et hachage du MDP : user.password.
-  user.authenticated = true;
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(user.password, salt);
   const user_hashed: string[] = [user.nom, user.prenom, user.email, hash];
@@ -30,7 +29,6 @@ export async function signIn(email: string, password: string) {
   );
 
   if (passwordIsValid) {
-    user.rows[0].authenticated = true;
     const token = jwt.sign({ userId: user.rows[0].id }, ACCESS_TOKEN_SECRET, {
       expiresIn: '1h',
     });

@@ -83,13 +83,13 @@ async function onSubmit() {
 
   if (formValidated) {
     try {
-      const result = await api.post('/signin', {
+      const response = await api.post('/signin', {
         email: email.value,
         mot_de_passe: password.value,
       });
 
-      if (result.status == 200) {
-        window.localStorage.setItem('token', result.data.token);
+      if (response.status === 200) {
+        window.localStorage.setItem('token', response.data.token);
 
         const userStore = useUserStore();
         userStore.setAuthenticated(true);
